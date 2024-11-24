@@ -12,7 +12,7 @@ RUN /opt/omero/web/venv3/bin/pip install \
         omero-parade \
         omero-autotag \
         omero-tagsearch \
-        'git+https://github.com/vernonlim/omero-crm-landing-page.git#egg=omero_crm_landing_page' \
+        'git+https://github.com/vernonlim/omero-crm-landing-page.git#egg=omero-crm-landing-page' \
         whitenoise
 
 ADD 01-default-webapps.omero /opt/omero/web/config/
