@@ -36,4 +36,4 @@ config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Da
 
 config append omero.web.ui.top_links '["Tag Search", "tagsearch"]'
 
-omero config append omero.web.ui.top_links '["Landing Page", "omero_crm_landing_page_index", {"title": "Open Landing Page in new tab", "target": "_blank"}]'
+config append omero.web.ui.top_links '["Landing Page", "omero_crm_landing_page_index", {"title": "Open Landing Page in new tab", "target": "_blank"}]'
