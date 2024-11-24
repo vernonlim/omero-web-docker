@@ -28,7 +28,7 @@ config append omero.web.ui.center_plugins '["Auto Tag", "omero_autotag/auto_tag_
 config append omero.web.apps '"omero_tagsearch"'
 
 # omero-crm-landing-page
-config append -- omero.web.apps '"omero_crm_landing_page"'
+config append omero.web.apps '"omero_crm_landing_page"'
 # config append -- omero.web.open_with '["omero_crm_landing_page", "omero_crm_landing_page_index", {"supported_objects":["images"], "script_url": "omero_crm_landing_page/app.js", "label": "CRM Landing Page"}]'
 
 # Top links
@@ -36,4 +36,4 @@ config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Da
 
 config append omero.web.ui.top_links '["Tag Search", "tagsearch"]'
 
-config append omero.web.ui.top_links '["Landing Page", "omero_crm_landing_page_index", {"title": "Open Landing Page in new tab", "target": "_blank"}]'
+omero config append omero.web.ui.top_links '["Landing Page", "omero_crm_landing_page_index", {"title": "Open Landing Page in new tab", "target": "_blank"}]'
