@@ -4,6 +4,8 @@ MAINTAINER ome-devel@lists.openmicroscopy.org.uk
 
 USER root
 
+RUN mkdir /sites
+
 RUN /opt/omero/web/venv3/bin/pip install \
         omero-figure \
         omero-iviewer \
@@ -12,8 +14,13 @@ RUN /opt/omero/web/venv3/bin/pip install \
         omero-parade \
         omero-autotag \
         omero-tagsearch \
-        'git+https://github.com/vernonlim/omero_crm_landing_page.git#egg=omero_crm_landing_page' \
         whitenoise
+
+# 'git+https://github.com/vernonlim/omero_crm_landing_page.git#egg=omero_crm_landing_page' \
+
+# install from local
+RUN /opt/omero/web/venv3/bin/pip install \
+        /sites/omero_crm_landing_page
 
 ADD 01-default-webapps.omero /opt/omero/web/config/
 
