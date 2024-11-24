@@ -21,7 +21,8 @@ RUN /opt/omero/web/venv3/bin/pip install \
 
 # dependencies for local site
 RUN /opt/omero/web/venv3/bin/pip install \
-        inertia-django
+        inertia-django \
+        django-vite
 
 ADD 01-default-webapps.omero /opt/omero/web/config/
 
