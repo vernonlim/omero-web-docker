@@ -16,6 +16,8 @@ RUN /opt/omero/web/venv3/bin/pip install \
         omero-tagsearch \
         whitenoise
 
+CMD ./try-pip-install.sh
+
 # 'git+https://github.com/vernonlim/omero_crm_landing_page.git#egg=omero_crm_landing_page' \
 
 # install from local
@@ -25,5 +27,3 @@ RUN /opt/omero/web/venv3/bin/pip install \
 ADD 01-default-webapps.omero /opt/omero/web/config/
 
 USER omero-web
-
-CMD ./try-pip-install.sh
