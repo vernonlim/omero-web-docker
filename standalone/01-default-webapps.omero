@@ -37,7 +37,7 @@ config append omero.web.ui.top_links '["Tag Search", "tagsearch"]'
 
 # omero-gallery
 config append omero.web.apps '"omero_gallery"'
-config append omero.web.ui.top_links '["Gallery", "omero_gallery_index", {"title": "Open Gallery in new tab", "target": "_blank"}]'
+config append omero.web.ui.top_links '["Gallery", "gallery", {"title": "Open Gallery in new tab", "target": "_blank"}]'
 
 
 
