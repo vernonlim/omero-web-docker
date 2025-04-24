@@ -14,8 +14,11 @@ RUN /opt/omero/web/venv3/bin/pip install \
         omero-parade \
         omero-autotag \
         omero-tagsearch \
-        omero-gallery \
-        whitenoise 
+        whitenoise
+
+ADD omero-webimport /omero-webimport
+
+RUN /opt/omero/web/venv3/bin/pip install -e /omero-webimport/
 
 # add this to above to install from git
 # 'git+https://github.com/vernonlim/omero_crm_landing_page.git#egg=omero_crm_landing_page' \

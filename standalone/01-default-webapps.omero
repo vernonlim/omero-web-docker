@@ -33,11 +33,9 @@ config append omero.web.apps '"omero_tagsearch"'
 # Top links
 config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Data via Projects, Tags etc"}],["History", "history", {"title": "History"}], ["Mapr", {"viewname": "maprindex_anyvalue"}, {"title": "Find Any Value"}], ["Figure", "figure_index", {"title": "Open Figure in new tab", "target": "_blank"}], ["Help", "https://help.openmicroscopy.org/", {"title":"Open OMERO user guide in a new tab", "target":"new"}]]'
 
+config append omero.web.apps '"omero_webimport"'
+config append omero.web.ui.top_links '["Webimport", "omero_webimport_index", {"title": "Upload images", "target": "_blank"}]'
+
 config append omero.web.ui.top_links '["Tag Search", "tagsearch"]'
-
-# omero-gallery
-config append omero.web.apps '"omero_gallery"'
-config append omero.web.ui.top_links '["Gallery", "webgallery_index", {"title": "Open Gallery in new tab", "target": "_blank"}]'
-
 
 

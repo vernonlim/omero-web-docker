@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OMERO Web Import</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'omero_webimport/css/webimport.css' %}">
+    </head>
+    <body>
+        {% csrf_token %}
+        
+        <div class="page-container">
+            <header>
+                <h1>OMERO Web Import</h1>
+                <p>Upload and import images to your OMERO instance</p>
+            </header>
+
+            <!-- We need verbatim so that we can add brackets for vue.js and they are ignored by django -->
+            {% verbatim %}
+            <div id="app" v-cloak>
+                <div class="upload-container">
+                    <div class="upload-area" @drop.prevent="addFile" @dragover.prevent @click="triggerFileInput">
+                        <input type="file" ref="fileInput" multiple style="display: none" @change="onFileInputChange">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h2>Drag Files Here</h2>
+                        <p>Drop your image files to upload them to OMERO or click to select files</p>
+                    </div>
+
+                    <div class="files-list" v-if="files.length > 0">
+                        <h3>Files to Upload</h3>
+                        <ul>
+                            <li v-for="file in files" class="file-item">
+                                <div class="file-info">
+                                    <i class="fas fa-file-image"></i>
+                                    <span class="file-name">{{ file.name }}</span>
+                                    <span class="file-size">({{ file.size | kb }} kb)</span>
+                                </div>
+                                <button @click="removeFile(file)" class="remove-btn" title="Remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="actions">
+                        <button :disabled="uploadDisabled" @click="upload" class="import-btn">
+                            <i class="fas fa-upload"></i> Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endverbatim %}
+        </div>
+        
+        <script>
+            let csrftoken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+            // Set the import URL outside of Vue
+            let import_url = "{% url 'omero_webimport_import' %}";
+            
+            Vue.config.productionTip = false;
+            Vue.config.devtools = false;
+
+            Vue.filter('kb', val => {
+                return Math.floor(val/1024);  
+            });
+
+            const app = new Vue({
+                el:'#app', 
+                data: {
+                    files:[],
+                    uploading: false
+                },
+                computed: {
+                    uploadDisabled() {
+                        return this.files.length === 0 || this.uploading;
+                    }
+                },
+                methods:{
+                    triggerFileInput() {
+                        this.$refs.fileInput.click();
+                    },
+                    onFileInputChange(e) {
+                        const selectedFiles = e.target.files;
+                        if(!selectedFiles) return;
+                        
+                        ([...selectedFiles]).forEach(f => {
+                            this.files.push(f);
+                        });
+                        
+                        // Reset file input so the same file can be selected again if needed
+                        this.$refs.fileInput.value = '';
+                    },
+                    addFile(e) {
+                        let droppedFiles = e.dataTransfer.files;
+                        if(!droppedFiles) return;
+                        ([...droppedFiles]).forEach(f => {
+                            this.files.push(f);
+                        });
+                    },
+                    removeFile(file){
+                        this.files = this.files.filter(f => {
+                            return f != file;
+                        });      
+                    },
+                    upload() {
+                        this.uploading = true;
+                        
+                        let formData = new FormData();
+                        this.files.forEach((f,x) => {
+                            formData.append('file'+(x), f);
+                        });
+
+                        formData.append('csrfmiddlewaretoken', csrftoken);
+
+                        console.log('Sending to URL:', import_url);
+                        console.log('Files to upload:', this.files.length);
+
+                        fetch(import_url, {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => {
+                            // Check if response is ok before parsing JSON
+                            if (!res.ok) {
+                                console.error('Server error:', res.status, res.statusText);
+                                throw new Error(`Server error: ${res.status}`);
+                            }
+                            return res.text().then(text => {
+                                try {
+                                    // Try to parse as JSON
+                                    return JSON.parse(text);
+                                } catch (e) {
+                                    // If parsing fails, log the raw response and throw error
+                                    console.error('Invalid JSON response:', text);
+                                    throw new Error('Invalid server response');
+                                }
+                            });
+                        })
+                        .then(res => {
+                            console.log('done uploading', res);
+                            alert('Upload complete! Imported ' + res.image_ids.length + ' images.');
+                            this.files = [];
+                            this.uploading = false;
+                        })
+                        .catch(e => {
+                            console.error('Upload error:', e);
+                            alert('Error uploading files: ' + e.message);
+                            this.uploading = false;
+                        });
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
